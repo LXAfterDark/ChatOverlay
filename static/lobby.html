@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>ChatOverlay</title>
+        <link rel="stylesheet" href="lobby.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <script>
+            $.extend({
+                getUrlVars: function() {
+                    var vars = [], hash;
+                    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+                    for(var i = 0; i < hashes.length; i++) {
+                        hash = hashes[i].split('=');
+                        vars.push(hash[0]);
+                        vars[hash[0]] = hash[1];
+                    }
+                    return vars;
+                },
+                getUrlVar: function(name){
+                    return $.getUrlVars()[name];
+                }
+            });
+
+            $( document ).ready(function() {
+                const socket = io();
+                
+                var align = $.getUrlVar('align') || 'left'
+                var fade = Boolean($.getUrlVar('fade')) || false
+                
+                if(align == 'right') {
+                    $( "#chatContainer" ).addClass('right-align')
+                }
+
+                socket.on('twitchChatMsg', (msgId, user, color, msg) => {
+                    $( "#chatContainer" ).append(`<div id="${msgId}" class="animate__animated animate__fadeIn"><img class="logo-image" src="twitch.png"><span style="font-weight: bold;">${user}:</span> ${msg}</div>`)
+                    if(fade == true) {
+                        setTimeout(() => { 
+                            $( `#${msgId}` ).removeClass('animate__fadeIn').addClass('animate__fadeOut')
+                        }, 15000)
+                    }
+                })
+
+                socket.on('vstreamChatMsg', (msgId, user, color, msg) => {
+                    $( "#chatContainer" ).append(`<div id="${msgId}" class="animate__animated animate__fadeIn"><img class="logo-image" src="vstream.png"><span style="font-weight: bold;">${user}:</span> ${msg}</div>`)
+                    if(fade == true) {
+                        setTimeout(() => { 
+                            $( `#${msgId}` ).removeClass('animate__fadeIn').addClass('animate__fadeOut')
+                        }, 15000)
+                    }
+                })
+
+                socket.on('removeMsg', (msgId) => {
+                    $( `#${msgId}` ).removeClass('animate__fadeIn').addClass('animate__fadeOut')
+                })
+            })
+        </script>
+    </head>
+    <body>
+        <div id="chatContainer" class="flex-container">
+            <!-- chat messages go here -->
+        </div>
+    </body>
+</html>
