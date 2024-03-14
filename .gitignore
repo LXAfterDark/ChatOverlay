@@ -1,3 +1,5 @@
 node_modules
 .env
 ChatOverlay.code-workspace
+cert.pem
+key.pem

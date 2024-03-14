@@ -1,15 +1,20 @@
 require('dotenv').config()
 const express = require('express')
-const { createServer } = require('http')
+const fs = require('fs')
+const { createServer } = require('https')
 const bodyParser = require('body-parser')
 const { Server } = require('socket.io')
 const { StreamerbotClient } = require('@streamerbot/client')
 
 const main = async () => {
     const app = express()
-    const port = 8000
+    const port = 8888
 
-    const httpServer = createServer(app)
+    const httpServer = createServer({
+        key: fs.readFileSync('key.pem'),
+        cert: fs.readFileSync('cert.pem')
+    }, app)
+
     const io = new Server(httpServer, { /* options */ })
     const sbClient = new StreamerbotClient({ host: '192.168.1.245', port: 8080, endpoint: '/', autoReconnect: true });
 
