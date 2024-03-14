@@ -8,7 +8,7 @@ const { StreamerbotClient } = require('@streamerbot/client')
 
 const main = async () => {
     const app = express()
-    const port = 8888
+    const port = Number(process.env.CHATOVERLAY_PORT)
 
     const httpServer = createServer({
         key: fs.readFileSync('key.pem'),
@@ -16,7 +16,12 @@ const main = async () => {
     }, app)
 
     const io = new Server(httpServer, { /* options */ })
-    const sbClient = new StreamerbotClient({ host: '192.168.1.245', port: 8080, endpoint: '/', autoReconnect: true });
+    const sbClient = new StreamerbotClient({
+        host: process.env.STREAMERBOT_WS_IP,
+        port: Number(process.env.STREAMERBOT_WS_PORT),
+        endpoint: process.env.STREAMERBOT_WS_ENDPOINT,
+        autoReconnect: true
+    });
 
     app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }))
     app.use(bodyParser.json({ limit: '50mb' }))
