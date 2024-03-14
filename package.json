@@ -16,7 +16,7 @@
   },
   "scripts": {
     "dev": "cross-env nodemon --trace-warnings",
-    "start": "cross-env node ./src/index.js"
+    "start": "cross-env node ./index.js"
   },
   "devDependencies": {
     "cross-env": "^7.0.3",
