@@ -39,7 +39,7 @@ const main = async () => {
         try {
             var chatString = data.data.message.message
             data.data.message.emotes.forEach((emote) => {
-                chatString = chatString.replaceAll(emote.name, `<img style="width: 24px; height: 24px;" src="${emote.imageUrl}" />`)
+                chatString = chatString.replaceAll(emote.name, `<img style="width: 32px; height: 32px;" src="${emote.imageUrl}" />`)
             })
             io.of('/').emit('twitchChatMsg', data.data.message.msgId, data.data.message.displayName, data.data.message.color, chatString)
         } catch (err) {
@@ -55,7 +55,7 @@ const main = async () => {
     await sbClient.on('VStream.ChatMessage', (data) => {
         var chatString = data.data.text
         data.data.emojis.forEach((emoji) => {
-            chatString = chatString.replaceAll(`:${emoji.name}:`, `<img style="width: 24px; height: 24px;" src="${emoji.imageUrl}" />`)
+            chatString = chatString.replaceAll(`:${emoji.name}:`, `<img style="width: 32px; height: 32px;" src="${emoji.imageUrl}" />`)
         })
         io.of('/').emit('vstreamChatMsg', data.data.id, data.data.user.username, data.data.color, chatString)
     })
