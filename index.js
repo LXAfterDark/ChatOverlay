@@ -36,12 +36,22 @@ const main = async () => {
     })
 
     await sbClient.on('Twitch.ChatMessage', (data) => {
+        // console.log(JSON.stringify(data.data, null, 4))
         try {
             var chatString = data.data.message.message
             data.data.message.emotes.forEach((emote) => {
                 chatString = chatString.replaceAll(emote.name, `<img style="width: 32px; height: 32px;" src="${emote.imageUrl}" />`)
             })
-            io.of('/').emit('twitchChatMsg', data.data.message.msgId, data.data.message.displayName, data.data.message.color, chatString)
+
+            // TODO: integrate subscriber/moderator/broadcaster badges
+            var badges = []
+            data.data.message.badges.forEach((badge) => {
+                badges.push(`<img style="margin-left: 2px; width: 32px; height: 32px;" src=${badge.imageUrl} />`)
+            })
+
+            // TODO: handle cheer emotes
+
+            io.of('/').emit('twitchChatMsg', data.data.message.msgId, badges, data.data.message.displayName, data.data.message.color, chatString)
         } catch (err) {
             console.log(err.message)
             console.debug(err.stack)
@@ -53,11 +63,17 @@ const main = async () => {
     })
 
     await sbClient.on('VStream.ChatMessage', (data) => {
-        var chatString = data.data.text
-        data.data.emojis.forEach((emoji) => {
-            chatString = chatString.replaceAll(`:${emoji.name}:`, `<img style="width: 32px; height: 32px;" src="${emoji.imageUrl}" />`)
-        })
-        io.of('/').emit('vstreamChatMsg', data.data.id, data.data.user.username, data.data.color, chatString)
+        // console.log(JSON.stringify(data, null, 4))
+        try{
+            var chatString = data.data.text
+            data.data.emojis.forEach((emoji) => {
+                chatString = chatString.replaceAll(`:${emoji.name}:`, `<img style="width: 32px; height: 32px;" src="${emoji.imageUrl}" />`)
+            })
+            io.of('/').emit('vstreamChatMsg', data.data.id, data.data.user.username, data.data.color, chatString)    
+        } catch (err) {
+            console.log(err.message)
+            console.debug(err.stack)
+        }
     })
 
     httpServer.listen(port, () => {

@@ -35,8 +35,8 @@
                     $( "#chatContainer" ).addClass('right-align')
                 }
 
-                socket.on('twitchChatMsg', (msgId, user, color, msg) => {
-                    $( "#chatContainer" ).append(`<div id="${msgId}" class="animate__animated animate__fadeIn"><img class="logo-image" src="twitch.png"><span style="font-weight: bold;">${user}:</span> ${msg}</div>`)
+                socket.on('twitchChatMsg', (msgId, badges, user, color, msg) => {
+                    $( "#chatContainer" ).append(`<div id="${msgId}" class="animate__animated animate__fadeIn"><img class="logo-image" style="width: 32px; height: 32px;" src="twitch.png">${ badges.join('') }<span style="font-weight: bold;">${user}:</span> ${msg}</div>`)
                     if(fade == true) {
                         setTimeout(() => { 
                             $( `#${msgId}` ).removeClass('animate__fadeIn').addClass('animate__fadeOut')
@@ -45,7 +45,7 @@
                 })
 
                 socket.on('vstreamChatMsg', (msgId, user, color, msg) => {
-                    $( "#chatContainer" ).append(`<div id="${msgId}" class="animate__animated animate__fadeIn"><img class="logo-image" src="vstream.png"><span style="font-weight: bold;">${user}:</span> ${msg}</div>`)
+                    $( "#chatContainer" ).append(`<div id="${msgId}" class="animate__animated animate__fadeIn"><img class="logo-image" style="width: 32px; height: 32px;" src="vstream.png"><span style="font-weight: bold;">${user}:</span> ${msg}</div>`)
                     if(fade == true) {
                         setTimeout(() => { 
                             $( `#${msgId}` ).removeClass('animate__fadeIn').addClass('animate__fadeOut')
